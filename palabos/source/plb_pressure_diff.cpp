@@ -33,13 +33,13 @@ void setupPressureDifferenceProblem( MultiBlockLattice3D<T,DESCRIPTOR>& lattice,
         const plint ny = lattice.getNy();
         const plint nz = lattice.getNz();
 
-        Box3D inlet (0,0,      1,ny-2, 1,nz-2);
+        Box3D inlet (0, 0, 1, ny-2, 1, nz-2);
         boundaryCondition->addPressureBoundary0N(inlet, lattice);
         setBoundaryDensity(lattice, inlet, (T) 1.);
 
-        Box3D outlet(nx-1,nx-1, 1,ny-2, 1,nz-2);
+        Box3D outlet(nx-1, nx-1, 1, ny-2, 1, nz-2);
         boundaryCondition->addPressureBoundary0P(outlet, lattice);
-        setBoundaryDensity(lattice, outlet, (T) 1. - deltaP*DESCRIPTOR<T>::invCs2);
+        setBoundaryDensity(lattice, outlet, (T) 1.-deltaP*DESCRIPTOR<T>::invCs2);
 
         // Where "geometry" evaluates to 1 (solid boundary), use bounce-back.
         defineDynamics(lattice, geometry, new BounceBack<T,DESCRIPTOR>(), 1);
@@ -70,7 +70,9 @@ int main(int argc, char **argv)
         global::directories().setOutputDir("./");
 
         if (argc < 2) {
-            pcout << "SimPhoNy-Palabos file-IO wrapper" << endl;
+            pcout << "SimPhoNy-Palabos engine for modelling incompressible" << endl;
+            pcout << "fluid flow given a pressure difference at the domain" << endl;
+            pcout << "boundaries." << endl;
             pcout << "Usage: plb_pressure_diff.exe input_fname" << endl;
             return -1;
         }

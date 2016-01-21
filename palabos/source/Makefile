@@ -15,7 +15,7 @@
 #                optimFlags   = -O -finline-functions
 
 # Leading directory of the Palabos source code
-palabosRoot  = /usr/local/palabos-v1.5r1
+palabosRoot  = ../palabos-v1.5r1
 # Name of source files in current directory to compile and link with Palabos
 projectFiles = plb_pressure_diff.cpp
 
