@@ -102,11 +102,6 @@ class PalabosEngine(ABCModelingEngine):
             message = 'Execution of the Palabos engine failed'
             raise RuntimeError(message)
 
-        # Read the simulated flow field
-        nx = self._proxy_lattice.size[0]
-        ny = self._proxy_lattice.size[1]
-        nz = self._proxy_lattice.size[2]
-
         den_data = self._data[CUBA.DENSITY]
         vel_data = self._data[CUBA.VELOCITY]
 
@@ -155,22 +150,19 @@ class PalabosEngine(ABCModelingEngine):
         # Copy lattice attributes
         name = container.name
         pc = container.primitive_cell
-        nx = container.size[0]
-        ny = container.size[1]
-        nz = container.size[2]
         org = container.origin
 
         # Allocate arrays for lattice data
-        geom = np.zeros((nx, ny, nz), dtype=np.uint8)
-        den = np.zeros((nx, ny, nz), dtype=np.float64)
-        vel = np.zeros((nx, ny, nz, 3), dtype=np.float64)
+        geom = np.zeros(container.size, dtype=np.uint8)
+        den = np.zeros(container.size, dtype=np.float64)
+        vel = np.zeros(container.size+(3,), dtype=np.float64)
 
         self._data[CUBA.MATERIAL_ID] = geom
         self._data[CUBA.DENSITY] = den
         self._data[CUBA.VELOCITY] = vel
 
         # Create a proxy lattice
-        self._proxy_lattice = ProxyLattice(name, pc, (nx, ny, nz),
+        self._proxy_lattice = ProxyLattice(name, pc, container.size,
                                            org, self._data)
 
         self._proxy_lattice.update_nodes(container.iter_nodes())
