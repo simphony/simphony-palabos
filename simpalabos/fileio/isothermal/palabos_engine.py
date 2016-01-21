@@ -89,7 +89,7 @@ class PalabosEngine(ABCModelingEngine):
         self._write_input_script(input_script_fname)
 
         # Run the modeling engine
-        run_command = 'plb_pressure_diff.exe ' + input_script_fname
+        run_command = 'mpirun -np 4 plb_pressure_diff.exe ' + input_script_fname
 
         p = subprocess.Popen(run_command, shell=True,
                              stdout=subprocess.PIPE,
@@ -318,8 +318,8 @@ class PalabosEngine(ABCModelingEngine):
             Field data
 
         """
-
-        vtkout = et.parse(fname)
+        p = et.XMLParser(huge_tree=True)
+        vtkout = et.parse(fname, p)
         root = vtkout.getroot()
 
         image_data = root.find('.//ImageData')
