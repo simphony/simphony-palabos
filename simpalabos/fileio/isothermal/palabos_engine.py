@@ -107,7 +107,8 @@ class PalabosEngine(ABCModelingEngine):
 
         # Copy data from the files into the given arrays
         den_data[:] = self._read_palabos_vtk_output(den_read_fname)
-        vel_data[:] = self._read_palabos_vtk_output(vel_read_fname)
+        vel_data[:] = np.transpose(
+            self._read_palabos_vtk_output(vel_read_fname), (1,2,3,0))
 
         # Clean up
         os.remove(input_script_fname)
@@ -332,8 +333,8 @@ class PalabosEngine(ABCModelingEngine):
         if num_comp is None:
             array_shape = tuple(dim[1::2])
         else:
-            array_shape = tuple(dim[1::2]) + (int(num_comp),)
+            array_shape = (int(num_comp),) + tuple(dim[1::2])
         num_elem = np.prod(array_shape)
         b64data = base64.standard_b64decode(data_array.text[7:-1])
         fdata = struct.unpack('<{0}f'.format(num_elem), b64data)
-        return np.asarray(fdata).reshape(array_shape)
+        return np.asarray(fdata).reshape(array_shape,order='F')
