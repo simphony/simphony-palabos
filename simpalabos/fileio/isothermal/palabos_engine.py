@@ -40,7 +40,7 @@ class PalabosEngine(ABCModelingEngine):
 
     BGK_ENUM = 0
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """Initialize and set default parameters for CM, SP, and BC."""
         # Definition of CM, SP, and BC data components
         self._data = {}
@@ -64,6 +64,18 @@ class PalabosEngine(ABCModelingEngine):
 
         self.BC[CUBA.DENSITY] = {'open': 'non-periodic',
                                  'wall': 'noFlux'}
+
+        # Call the base class in order to load CUDS
+        super(PalabosEngine, self).__init__(**kwargs)
+
+    def _load_cuds(self):
+        """Load CUDS data into Palabos engine."""
+        cuds = self.get_cuds()
+        if not cuds:
+            return
+
+        for component in cuds.iter(ABCLattice):
+            self.add_dataset(component)
 
     def run(self):
         """Run the modeling engine using the configured settings.
